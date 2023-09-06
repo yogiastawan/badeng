@@ -6,6 +6,9 @@ enable_testing()
 
 include_directories(include)
 
+add_subdirectory(thirdparties/SDL2-2.28.3)
+include_directories(thirdparties/SDL2-2.28.3/include)
+
 add_library(badeng core/badeng.c)
 
 
