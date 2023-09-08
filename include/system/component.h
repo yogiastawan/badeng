@@ -14,41 +14,42 @@
  * limitations under the License.
  */
 
-#ifndef GIHEX_BADENG_H
-#define GIHEX_BADENG_H
+#ifndef GIHEX_COMPONENT_H
+#define GIHEX_COMPONENT_H
 
-#include <utilities/mangle.h>
+#include <stdbool.h>
+
 #include <system/entity.h>
-#include <system/component.h>
 
 #ifdef __cplusplus
 extern C
 {
 #endif
-
-    typedef struct _be_engine BeEngine;
-
-    struct _be_engine
+    typedef enum _be_component_type BeComponentType;
+    enum _be_component_type
     {
-        /* data */
-        u32 numb_entity;
-        u32 cap_component;
-        u32 numb_component;
-        BeComponent **components;
+        VISIBILITY,
+        POSITION
     };
 
-    BeEngine *bd_engine_new();
+    typedef struct _be_component BeComponent;
+    struct _be_component
+    {
+        BeComponentType type;
+        void *component;
+    };
 
-    void bd_engine_run(BeEngine * engine);
+    BeComponent *be_component_new(BeComponentType type, void *component);
+    void be_component_destroy(BeComponent *component);
 
-    void bd_engine_destroy(BeEngine * engine);
-
-    void bd_engine_add_entity(BeEngine * eng, BeEntity * entity);
-
-    void be_engine_add_component(BeEngine * eng, BeEntity * entity, BeComponent *component);
+    typedef struct _be_component_visibility BeComponentVisibility;
+    struct _be_component_visibility
+    {
+        bool visible;
+    };
 
 #ifdef __cplusplus
 }
-#endif
+#endif /* GIHEX_COMPONENT_H */
 
-#endif /* GIHEX_BADENG_H */
+#endif /* GIHEX_COMPONENT_H */

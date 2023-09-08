@@ -14,41 +14,32 @@
  * limitations under the License.
  */
 
-#ifndef GIHEX_BADENG_H
-#define GIHEX_BADENG_H
+#ifndef GIHEX_ENTITY_H
+#define GIHEX_ENTITY_H
 
 #include <utilities/mangle.h>
-#include <system/entity.h>
-#include <system/component.h>
+
+#define DEFAULT_COMPONENT_CAPACITY 4
 
 #ifdef __cplusplus
 extern C
 {
 #endif
 
-    typedef struct _be_engine BeEngine;
+    typedef struct _be_entity BeEntity;
 
-    struct _be_engine
+    struct _be_entity
     {
-        /* data */
-        u32 numb_entity;
-        u32 cap_component;
+        u32 id;
         u32 numb_component;
-        BeComponent **components;
+        u32 capacity_component;
+        u32 *component_id;
     };
 
-    BeEngine *bd_engine_new();
-
-    void bd_engine_run(BeEngine * engine);
-
-    void bd_engine_destroy(BeEngine * engine);
-
-    void bd_engine_add_entity(BeEngine * eng, BeEntity * entity);
-
-    void be_engine_add_component(BeEngine * eng, BeEntity * entity, BeComponent *component);
+    BeEntity be_entity_new();
 
 #ifdef __cplusplus
 }
-#endif
+#endif /* GIHEX_ENTITY_H */
 
-#endif /* GIHEX_BADENG_H */
+#endif /* GIHEX_ENTITY_H */
