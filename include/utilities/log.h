@@ -17,7 +17,7 @@
 #ifndef GIHEX_LOG_H
 #define GIHEX_LOG_H
 
-#include <SDL_log.h>
+#include <SDL2/SDL_log.h>
 
 #ifdef __cplusplus
 extern C
@@ -38,6 +38,6 @@ extern C
 
 #ifdef __cplusplus
 }
-#endif/* GIHEX_LOG_H */
+#endif
 
 #endif/* GIHEX_LOG_H */

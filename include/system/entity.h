@@ -40,6 +40,6 @@ extern C
 
 #ifdef __cplusplus
 }
-#endif /* GIHEX_ENTITY_H */
+#endif
 
 #endif /* GIHEX_ENTITY_H */

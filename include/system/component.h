@@ -50,6 +50,6 @@ extern C
 
 #ifdef __cplusplus
 }
-#endif /* GIHEX_COMPONENT_H */
+#endif
 
 #endif /* GIHEX_COMPONENT_H */
