@@ -16,18 +16,18 @@ static BeEngine *create_engine()
     return eng;
 }
 
-BeEngine *bd_engine_new()
+BeEngine *be_engine_new()
 {
     LOGI("Create new engine");
     return be_engine = NULL != be_engine ? be_engine : create_engine();
 }
 
-void bd_engine_run(BeEngine *engine)
+void be_engine_run(BeEngine *engine)
 {
     LOGI("start run engine");
 }
 
-void bd_engine_destroy(BeEngine *engine)
+void be_engine_destroy(BeEngine *engine)
 {
     LOGI("Destroy engine");
     if (engine == NULL)
@@ -47,7 +47,7 @@ void bd_engine_destroy(BeEngine *engine)
     engine = NULL;
 }
 
-void bd_engine_add_entity(BeEngine *eng, BeEntity *entity)
+void be_engine_add_entity(BeEngine *eng, BeEntity *entity)
 {
     LOGI("Create new entity");
     if (NULL == eng)

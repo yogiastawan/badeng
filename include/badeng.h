@@ -37,11 +37,11 @@ extern C
         BeComponent **components;
     };
 
-    BeEngine *bd_engine_new();
+    BeEngine *be_engine_new();
 
-    void bd_engine_run(BeEngine * engine);
+    void be_engine_run(BeEngine * engine);
 
-    void bd_engine_destroy(BeEngine * engine);
+    void be_engine_destroy(BeEngine * engine);
 
     void bd_engine_add_entity(BeEngine * eng, BeEntity * entity);
 
