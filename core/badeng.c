@@ -37,11 +37,10 @@ void be_engine_destroy(BeEngine *engine)
     }
     if (NULL != engine->components)
     {
-        for (u32 i = 0; i < engine->numb_component; i++)
+        for (u32 i = 0; i < NUMB_COMPONENT; i++)
         {
-            be_component_destroy(engine->components[i]);
+            free(engine->system.id_slice_component[i]);
         }
-        free(engine->components);
     }
 
     free(engine);
