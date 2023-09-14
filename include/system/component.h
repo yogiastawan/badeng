@@ -29,7 +29,8 @@ extern C
     enum _be_component_type
     {
         VISIBILITY,
-        POSITION
+        POSITION,
+        NUMB_COMPONENT
     };
 
     typedef struct _be_component BeComponent;
@@ -52,4 +53,4 @@ extern C
 }
 #endif
 
-#endif /* GIHEX_COMPONENT_H */
+#endif/* GIHEX_COMPONENT_H */

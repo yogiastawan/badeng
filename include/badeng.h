@@ -20,6 +20,7 @@
 #include <utilities/mangle.h>
 #include <system/entity.h>
 #include <system/component.h>
+#include <system/system.h>
 
 #ifdef __cplusplus
 extern C
@@ -35,6 +36,7 @@ extern C
         u32 cap_component;
         u32 numb_component;
         BeComponent **components;
+        BeSystem system;
     };
 
     BeEngine *be_engine_new();
@@ -45,10 +47,12 @@ extern C
 
     void bd_engine_add_entity(BeEngine * eng, BeEntity * entity);
 
-    void be_engine_add_component(BeEngine * eng, BeEntity * entity, BeComponent *component);
+    void be_engine_add_component(BeEngine * eng, BeEntity * entity, BeComponent * component);
+
+    void be_engine_system_update(BeEngine *eng, BeComponentType type);
 
 #ifdef __cplusplus
 }
-#endif
+#endif /* GIHEX_BADENG_H */
 
 #endif /* GIHEX_BADENG_H */

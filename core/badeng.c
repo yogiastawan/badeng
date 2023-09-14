@@ -11,8 +11,9 @@ static BeEngine *create_engine()
     BeEngine *eng = (BeEngine *)malloc(sizeof(BeEngine));
     eng->numb_entity = 0;
     eng->numb_component = 0;
-    eng->cap_component = 4;
+    eng->cap_component = DEFAULT_COMPONENT_CAPACITY;
     eng->components = NULL;
+    eng->system = be_system_new();
     return eng;
 }
 
@@ -104,7 +105,22 @@ void be_engine_add_component(BeEngine *eng, BeEntity *entity, BeComponent *compo
     }
 
     entity->component_id[entity->numb_component] = eng->numb_component;
-    eng->numb_component++;
+    entity->numb_component++;
+
+    // add to engine->system
+    if (NULL == eng->system.id_slice_component[component->type])
+    {
+        eng->system.id_slice_component[component->type] = (u32 *)malloc(sizeof(u32) * eng->system.cap_slice_component[component->type]);
+    }
+
+    if (eng->system.numb_slice_component[component->type] >= eng->system.cap_slice_component[component->type])
+    {
+        eng->system.cap_slice_component[component->type] *= 2;
+        eng->system.id_slice_component[component->type] = realloc(eng->system.id_slice_component[component->type], sizeof(u32) * eng->system.cap_slice_component[component->type]);
+    }
+
+    eng->system.id_slice_component[component->type][eng->system.numb_slice_component[component->type]] = eng->numb_component;
+    eng->system.numb_slice_component[component->type]++;
 
     // add to engine;
     if (be_engine->components == NULL)
@@ -121,4 +137,23 @@ void be_engine_add_component(BeEngine *eng, BeEntity *entity, BeComponent *compo
 
     be_engine->components[eng->numb_component] = component;
     eng->numb_component++;
+}
+
+void be_engine_system_update(BeEngine *eng, BeComponentType type)
+{
+    u32 i = 0;
+    for (i = 0; i < eng->system.numb_slice_component[type]; i++)
+    {
+        //    system->id_slice_component[type][i];
+        u32 component_id = eng->system.id_slice_component[type][i];
+        switch (type)
+        {
+        case VISIBILITY:
+            system_visible_update(eng->components[component_id]);
+            break;
+
+        default:
+            break;
+        }
+    }
 }
