@@ -24,7 +24,9 @@
 #ifdef __cplusplus
 extern C
 {
-#endif
+#endif/* GIHEX_COMPONENT_H */
+
+
     typedef enum _be_component_type BeComponentType;
     enum _be_component_type
     {
@@ -34,14 +36,19 @@ extern C
     };
 
     typedef struct _be_component BeComponent;
+    typedef void (*BeComponentHandler)(BeComponent *component);
+
     struct _be_component
     {
         BeComponentType type;
         void *component;
+        BeComponentHandler system_handler;
     };
 
     BeComponent *be_component_new(BeComponentType type, void *component);
-    void be_component_destroy(BeComponent *component);
+    void be_component_destroy(BeComponent * component);
+
+    void be_component_set_system_handler(BeComponent * component, BeComponentHandler handler);
 
     typedef struct _be_component_visibility BeComponentVisibility;
     struct _be_component_visibility
@@ -51,6 +58,6 @@ extern C
 
 #ifdef __cplusplus
 }
-#endif
+#endif /* GIHEX_COMPONENT_H */
 
-#endif/* GIHEX_COMPONENT_H */
+#endif /* GIHEX_COMPONENT_H */

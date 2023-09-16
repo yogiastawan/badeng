@@ -134,6 +134,12 @@ void be_engine_add_component(BeEngine *eng, BeEntity *entity, BeComponent *compo
         // TODO!! check if need copy to new pointer
     }
 
+    // if handler component is null, then use default
+    if (NULL == component->system_handler)
+    {
+        component->system_handler = default_handler[component->type];
+    }
+
     be_engine->components[eng->numb_component] = component;
     eng->numb_component++;
 }
@@ -148,7 +154,8 @@ void be_engine_system_update(BeEngine *eng, BeComponentType type)
         switch (type)
         {
         case VISIBILITY:
-            system_visible_update(eng->components[component_id]);
+            eng->components[component_id]->system_handler(eng->components[component_id]);
+            // system_visible_update(eng->components[component_id]);
             break;
 
         default:

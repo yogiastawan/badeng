@@ -7,6 +7,8 @@
 extern C
 {
 #endif
+
+
     typedef struct _be_system BeSystem;
     struct _be_system
     {
@@ -17,9 +19,12 @@ extern C
 
     BeSystem be_system_new();
     void system_visible_update(BeComponent * comp);
-    
+
+    BeComponentHandler default_handler[NUMB_COMPONENT] = {system_visible_update,0};
+
+
 #ifdef __cplusplus
 }
 #endif
 
-#endif /* GIHEX_SYSTEM_H */
+#endif/* GIHEX_SYSTEM_H */

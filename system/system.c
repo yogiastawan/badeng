@@ -16,6 +16,6 @@ BeSystem be_system_new()
 
 void system_visible_update(BeComponent *comp)
 {
-    BeComponentVisibility *cv = (BeComponentVisibility *)comp;
+    BeComponentVisibility *cv = (BeComponentVisibility *)comp->component;
     cv->visible = !cv->visible;
 }
