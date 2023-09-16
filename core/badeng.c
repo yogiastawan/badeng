@@ -2,6 +2,8 @@
 
 #include <stdlib.h>
 
+#include <SDL.h>
+
 #include <utilities/log.h>
 
 static BeEngine *be_engine = NULL;
@@ -23,9 +25,79 @@ BeEngine *be_engine_new()
     return be_engine = NULL != be_engine ? be_engine : create_engine();
 }
 
-void be_engine_run(BeEngine *engine)
+void be_engine_run(BeEngine *engine, BeEngineType type)
 {
-    LOGI("start run engine");
+    LOGI("Start run engine");
+    static bool engine_already_run = false;
+
+    if (engine_already_run)
+    {
+        LOGI("Engine already run");
+        return;
+    }
+
+    // init SDL2
+    if (SDL_Init(SDL_INIT_EVERYTHING) < 0)
+    {
+        LOGE("Cannot init SDL2. Error: %s", SDL_GetError());
+        return;
+    }
+
+    // create window
+    u32 backend_type;
+    switch (type)
+    {
+    case BE_ENGINE_TYPE_OPENGL:
+        backend_type = SDL_WINDOW_OPENGL;
+        break;
+    case BE_ENGINE_TYPE_VULKAN:
+        backend_type = SDL_WINDOW_VULKAN;
+        break;
+    case BE_ENGINE_TYPE_METAL:
+        backend_type = SDL_WINDOW_METAL;
+        break;
+
+    default:
+        backend_type = SDL_WINDOW_OPENGL;
+        break;
+    }
+
+    SDL_Window *window = SDL_CreateWindow("Badeng ",
+                                          SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
+                                          0, 0,
+                                          SDL_WINDOW_FULLSCREEN | backend_type);
+
+    if (NULL == window)
+    {
+        LOGE("Cannot create window. Error: %s", SDL_GetError());
+        return;
+    }
+
+    engine_already_run = true;
+
+    bool quite = false;
+    SDL_Event e;
+    // loop
+    while (!quite)
+    {
+        // system event capture
+        while (SDL_PollEvent(&e))
+        {
+            if (e.type == SDL_QUIT)
+            {
+                quite = true;
+            }
+        }
+        // system update
+        be_engine_system_update(engine, BE_COMPONENT_TYPE_VISIBILITY);
+
+        // system render
+    }
+
+    // Destroy window
+    SDL_DestroyWindow(window);
+    SDL_Quit();
+    engine_already_run = false;
 }
 
 void be_engine_destroy(BeEngine *engine)
@@ -137,7 +209,7 @@ void be_engine_add_component(BeEngine *eng, BeEntity *entity, BeComponent *compo
     // if handler component is null, then use default
     if (NULL == component->system_handler)
     {
-        component->system_handler = default_handler[component->type];
+        component->system_handler = be_system_get_default_handler(component->type);
     }
 
     be_engine->components[eng->numb_component] = component;
@@ -153,7 +225,7 @@ void be_engine_system_update(BeEngine *eng, BeComponentType type)
         u32 component_id = eng->system.id_slice_component[type][i];
         switch (type)
         {
-        case VISIBILITY:
+        case BE_COMPONENT_TYPE_VISIBILITY:
             eng->components[component_id]->system_handler(eng->components[component_id]);
             // system_visible_update(eng->components[component_id]);
             break;

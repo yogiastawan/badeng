@@ -18,13 +18,13 @@ extern C
     };
 
     BeSystem be_system_new();
+
+    BeComponentHandler be_system_get_default_handler(BeComponentType type);
+
     void system_visible_update(BeComponent * comp);
-
-    BeComponentHandler default_handler[NUMB_COMPONENT] = {system_visible_update,0};
-
 
 #ifdef __cplusplus
 }
-#endif
+#endif/* GIHEX_SYSTEM_H */
 
 #endif/* GIHEX_SYSTEM_H */

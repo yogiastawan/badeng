@@ -11,11 +11,12 @@ endif ()
 include_directories(include)
 
 add_subdirectory(thirdparties/SDL2-2.28.3)
-include_directories(thirdparties/SDL2-2.28.3/include)
+# include_directories(thirdparties/SDL2-2.28.3/include)
 
 add_library(badeng SHARED core/badeng.c
         system/entity.c
-        system/component.c)
+        system/component.c
+        system/system.c)
 target_link_libraries(
         badeng
         

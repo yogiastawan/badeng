@@ -14,6 +14,12 @@ BeSystem be_system_new()
     return b;
 }
 
+BeComponentHandler be_system_get_default_handler(BeComponentType type)
+{
+    static BeComponentHandler default_handler[NUMB_COMPONENT] = {system_visible_update, 0};
+    return default_handler[type];
+}
+
 void system_visible_update(BeComponent *comp)
 {
     BeComponentVisibility *cv = (BeComponentVisibility *)comp->component;

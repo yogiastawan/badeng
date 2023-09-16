@@ -30,8 +30,8 @@ extern C
     typedef enum _be_component_type BeComponentType;
     enum _be_component_type
     {
-        VISIBILITY,
-        POSITION,
+        BE_COMPONENT_TYPE_VISIBILITY,
+        BE_COMPONENT_TYPE_POSITION,
         NUMB_COMPONENT
     };
 

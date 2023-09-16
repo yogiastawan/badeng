@@ -27,6 +27,15 @@ extern C
 {
 #endif
 
+    typedef enum _be_engine_type BeEngineType;
+
+    enum _be_engine_type
+    {
+        BE_ENGINE_TYPE_OPENGL,
+        BE_ENGINE_TYPE_VULKAN,
+        BE_ENGINE_TYPE_METAL,
+    };
+
     typedef struct _be_engine BeEngine;
 
     struct _be_engine
@@ -41,7 +50,7 @@ extern C
 
     BeEngine *be_engine_new();
 
-    void be_engine_run(BeEngine * engine);
+    void be_engine_run(BeEngine * engine, BeEngineType type);
 
     void be_engine_destroy(BeEngine * engine);
 
@@ -49,7 +58,7 @@ extern C
 
     void be_engine_add_component(BeEngine * eng, BeEntity * entity, BeComponent * component);
 
-    void be_engine_system_update(BeEngine *eng, BeComponentType type);
+    void be_engine_system_update(BeEngine * eng, BeComponentType type);
 
 #ifdef __cplusplus
 }
