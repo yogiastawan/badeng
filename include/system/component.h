@@ -19,19 +19,19 @@
 
 #include <stdbool.h>
 
-#include <system/entity.h>
+#include <utilities/mangle.h>
 
 #ifdef __cplusplus
 extern C
 {
-#endif/* GIHEX_COMPONENT_H */
-
+#endif
 
     typedef enum _be_component_type BeComponentType;
     enum _be_component_type
     {
-        BE_COMPONENT_TYPE_VISIBILITY,
+        BE_COMPONENT_TYPE_VISIBILITY = 0,
         BE_COMPONENT_TYPE_POSITION,
+        BE_COMPONENT_TYPE_SPRITE,
         NUMB_COMPONENT
     };
 
@@ -40,9 +40,11 @@ extern C
 
     struct _be_component
     {
+        u32 id;
         BeComponentType type;
         void *component;
         BeComponentHandler system_handler;
+        u32 index_in_system;
     };
 
     BeComponent *be_component_new(BeComponentType type, void *component);
@@ -58,6 +60,6 @@ extern C
 
 #ifdef __cplusplus
 }
-#endif /* GIHEX_COMPONENT_H */
+#endif
 
 #endif /* GIHEX_COMPONENT_H */
