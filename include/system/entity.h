@@ -17,7 +17,10 @@
 #ifndef GIHEX_ENTITY_H
 #define GIHEX_ENTITY_H
 
+#include <stdbool.h>
+
 #include <utilities/mangle.h>
+#include <system/component.h>
 
 #define DEFAULT_COMPONENT_CAPACITY 4
 
@@ -31,15 +34,15 @@ extern C
     struct _be_entity
     {
         u32 id;
-        u32 numb_component;
-        u32 capacity_component;
-        u32 *component_id;
+        u32 component_id[NUMB_COMPONENT];
+        bool has_component[NUMB_COMPONENT];
     };
 
-    BeEntity be_entity_new();
+    BeEntity *be_entity_new();
+    void be_entity_destroy(BeEntity * entt);
 
 #ifdef __cplusplus
 }
 #endif
 
-#endif /* GIHEX_ENTITY_H */
+#endif/* GIHEX_ENTITY_H */
