@@ -45,6 +45,7 @@ extern C
         void *component;
         BeComponentHandler system_handler;
         u32 index_in_system;
+        u32 entity_id;
     };
 
     BeComponent *be_component_new(BeComponentType type, void *component);

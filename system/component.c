@@ -12,6 +12,7 @@ BeComponent *be_component_new(BeComponentType type, void *component)
     comp->component = component;
     comp->system_handler = NULL;
     comp->index_in_system = 0;
+    comp->entity_id = 0;
     return comp;
 }
 void be_component_destroy(BeComponent *component)
