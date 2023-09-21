@@ -2,45 +2,37 @@
 
 #include <stdlib.h>
 
-#include <SDL.h>
-
 #include <utilities/log.h>
 
-static BeEngine *be_engine = NULL;
+#include <utilities/checker.h>
 
 static BeEngine *create_engine()
 {
     BeEngine *eng = (BeEngine *)malloc(sizeof(BeEngine));
-    eng->numb_entity = 0;
-    eng->numb_component = 0;
-    eng->cap_component = DEFAULT_COMPONENT_CAPACITY;
-    eng->components = NULL;
-    eng->system = be_system_new();
+    eng->width = 0;
+    eng->height = 0;
+    eng->window = NULL;
+    eng->scene_manager = be_scene_manager_new();
+    eng->startup_scene = NULL;
+    eng->startup_time_millis = 3000;
+    eng->main_scene = NULL;
     return eng;
 }
 
 BeEngine *be_engine_new()
 {
     LOGI("Create new engine");
-    return be_engine = NULL != be_engine ? be_engine : create_engine();
+    return create_engine();
 }
 
-void be_engine_run(BeEngine *engine, BeEngineType type)
+bool be_engine_init(BeEngine *engine, BeEngineType type)
 {
-    LOGI("Start run engine");
-    static bool engine_already_run = false;
-
-    if (engine_already_run)
-    {
-        LOGI("Engine already run");
-        return;
-    }
-
+    LOGI("Init engine");
     // init SDL2
     if (SDL_Init(SDL_INIT_EVERYTHING) < 0)
     {
         LOGE("Cannot init SDL2. Error: %s", SDL_GetError());
-        return;
+        return false;
     }
 
     // create window
@@ -58,29 +50,53 @@ void be_engine_run(BeEngine *engine, BeEngineType type)
         break;
 
     default:
+        LOGW("Invalid engine type. Trying to use default OPENGL");
         backend_type = SDL_WINDOW_OPENGL;
         break;
     }
 
-    SDL_Window *window = SDL_CreateWindow("Badeng ",
-                                          SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
-                                          0, 0,
-                                          SDL_WINDOW_FULLSCREEN | backend_type);
+    engine->window = SDL_CreateWindow("Badeng ",
+                                      SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
+                                      0, 0,
+                                      SDL_WINDOW_FULLSCREEN | backend_type);
 
-    if (NULL == window)
+    if (NULL == engine->window)
     {
         LOGE("Cannot create window. Error: %s", SDL_GetError());
-        return;
+        return false;
     }
 
+    SDL_GetWindowSizeInPixels(engine->window, &(engine->width), &(engine->height));
+    return true;
+}
+
+void be_engine_set_startup_scene(BeEngine *engine, BeScene *scene)
+{
+    engine->startup_scene = scene;
+}
+
+void be_engine_run(BeEngine *engine)
+{
+    LOGI("Start run engine");
+    static bool engine_already_run = false;
+
+    if (engine_already_run)
+    {
+        LOGI("Engine already run");
+        return;
+    }
     engine_already_run = true;
 
+    be_scene_manager_start_scene(engine->scene_manager, engine->startup_scene, false);
+
     bool quite = false;
+    u32 time_start = SDL_GetTicks();
+    bool on_startup = true;
     SDL_Event e;
     // loop
     while (!quite)
     {
-        // system event capture
+        // event capture
         while (SDL_PollEvent(&e))
         {
             if (e.type == SDL_QUIT)
@@ -88,150 +104,45 @@ void be_engine_run(BeEngine *engine, BeEngineType type)
                 quite = true;
             }
         }
-        // system update
-        be_engine_system_update(engine, BE_COMPONENT_TYPE_VISIBILITY);
+        // update
+        be_scene_manager_update(engine->scene_manager, BE_COMPONENT_TYPE_VISIBILITY);
 
-        // system render
+        // render
+        be_scene_manager_draw(engine->scene_manager);
+        if (!on_startup)
+        {
+            continue;
+        }
+
+        if (SDL_GetTicks() - time_start >= engine->startup_time_millis)
+        {
+            LOGI("Start main scene");
+            be_scene_manager_start_scene(engine->scene_manager, engine->main_scene, true);
+            on_startup = false;
+        }
     }
 
-    // Destroy window
-    SDL_DestroyWindow(window);
-    SDL_Quit();
     engine_already_run = false;
 }
 
 void be_engine_destroy(BeEngine *engine)
 {
     LOGI("Destroy engine");
-    if (engine == NULL)
+    if (NULL == engine)
     {
         return;
     }
-    if (NULL != engine->components)
+    if (engine->window)
     {
-        for (u32 i = 0; i < NUMB_COMPONENT; i++)
-        {
-            free(engine->system.id_slice_component[i]);
-        }
+        SDL_DestroyWindow(engine->window);
+        NULLER(engine->window);
     }
 
-    free(engine);
-    engine = NULL;
-}
-
-void be_engine_add_entity(BeEngine *eng, BeEntity *entity)
-{
-    LOGI("Create new entity");
-    if (NULL == eng)
+    if (engine->scene_manager)
     {
-        LOGE("Failed create Entity because engine is NULL");
-        return;
-        // add abort here
+        be_scene_manager_destroy(engine->scene_manager);
     }
 
-    if (NULL == entity)
-    {
-        LOGE("Cannot add component because Entity is NULL");
-        return;
-    }
-
-    entity->id = eng->numb_entity;
-
-    eng->numb_entity++;
-}
-
-void be_engine_add_component(BeEngine *eng, BeEntity *entity, BeComponent *component)
-{
-    if (NULL == eng)
-    {
-        LOGE("Cannot add component because Engine is NULL");
-        return;
-    }
-
-    if (NULL == entity)
-    {
-        // abort
-        LOGE("Cannot add component because Entity is NULL");
-        return;
-    }
-
-    if (NULL == component)
-    {
-        // abort;
-        LOGE("Cannot add component because component is NULL");
-        return;
-    }
-
-    // add component id to entity
-    if (NULL == entity->component_id)
-    {
-        entity->component_id = malloc(sizeof(u32) * entity->capacity_component);
-    }
-
-    if (entity->numb_component >= entity->capacity_component / 2)
-    {
-        entity->capacity_component *= 2;
-        entity->component_id = realloc(entity->component_id, sizeof(u32) * entity->capacity_component);
-        // TODO!! check if need copy to new pointer
-    }
-
-    entity->component_id[entity->numb_component] = eng->numb_component;
-    entity->numb_component++;
-
-    // add to engine->system
-    if (NULL == eng->system.id_slice_component[component->type])
-    {
-        eng->system.id_slice_component[component->type] = (u32 *)malloc(sizeof(u32) * eng->system.cap_slice_component[component->type]);
-    }
-
-    if (eng->system.numb_slice_component[component->type] >= eng->system.cap_slice_component[component->type])
-    {
-        eng->system.cap_slice_component[component->type] *= 2;
-        eng->system.id_slice_component[component->type] = realloc(eng->system.id_slice_component[component->type], sizeof(u32) * eng->system.cap_slice_component[component->type]);
-    }
-
-    eng->system.id_slice_component[component->type][eng->system.numb_slice_component[component->type]] = eng->numb_component;
-    eng->system.numb_slice_component[component->type]++;
-
-    // add to engine;
-    if (be_engine->components == NULL)
-    {
-        be_engine->components = malloc(sizeof(BeComponent) * eng->cap_component);
-    }
-
-    if (eng->numb_component >= eng->cap_component / 2)
-    {
-        eng->cap_component *= 2;
-        be_engine->components = realloc(be_engine->components, sizeof(BeComponent) * eng->cap_component);
-        // TODO!! check if need copy to new pointer
-    }
-
-    // if handler component is null, then use default
-    if (NULL == component->system_handler)
-    {
-        component->system_handler = be_system_get_default_handler(component->type);
-    }
-
-    be_engine->components[eng->numb_component] = component;
-    eng->numb_component++;
-}
-
-void be_engine_system_update(BeEngine *eng, BeComponentType type)
-{
-    u32 i = 0;
-    for (i = 0; i < eng->system.numb_slice_component[type]; i++)
-    {
-        //    system->id_slice_component[type][i];
-        u32 component_id = eng->system.id_slice_component[type][i];
-        switch (type)
-        {
-        case BE_COMPONENT_TYPE_VISIBILITY:
-            eng->components[component_id]->system_handler(eng->components[component_id]);
-            // system_visible_update(eng->components[component_id]);
-            break;
-
-        default:
-            break;
-        }
-    }
+    SDL_Quit();
+    DESTROYER(engine);
 }

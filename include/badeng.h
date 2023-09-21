@@ -21,6 +21,9 @@
 #include <system/entity.h>
 #include <system/component.h>
 #include <system/system.h>
+#include <scene/scene_manager.h>
+
+#include <SDL.h>
 
 #ifdef __cplusplus
 extern C
@@ -41,24 +44,26 @@ extern C
     struct _be_engine
     {
         /* data */
-        u32 numb_entity;
-        u32 cap_component;
-        u32 numb_component;
-        BeComponent **components;
-        BeSystem system;
+        i32 width;
+        i32 height;
+
+        SDL_Window *window;
+
+        BeSceneManager *scene_manager;
+        BeScene *startup_scene;
+        u32 startup_time_millis;
+        BeScene *main_scene;
     };
 
     BeEngine *be_engine_new();
 
-    void be_engine_run(BeEngine * engine, BeEngineType type);
+    bool be_engine_init(BeEngine * engine, BeEngineType type);
+
+    void be_engine_run(BeEngine * engine);
 
     void be_engine_destroy(BeEngine * engine);
 
-    void bd_engine_add_entity(BeEngine * eng, BeEntity * entity);
-
-    void be_engine_add_component(BeEngine * eng, BeEntity * entity, BeComponent * component);
-
-    void be_engine_system_update(BeEngine * eng, BeComponentType type);
+    void be_engine_set_startup_scene(BeEngine * engine, BeScene * scene);
 
 #ifdef __cplusplus
 }
