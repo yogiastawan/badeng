@@ -38,6 +38,8 @@ BeScene *be_scene_new(i32 width, i32 height)
 {
     BeScene *sc = (BeScene *)malloc(sizeof(BeScene));
     sc->numb_entity = 0;
+    sc->cap_entity = DEFAULT_COMPONENT_CAPACITY;
+    sc->entites = NULL;
     sc->numb_component = 0;
     sc->cap_component = DEFAULT_COMPONENT_CAPACITY;
     sc->components = NULL;
@@ -48,7 +50,7 @@ BeScene *be_scene_new(i32 width, i32 height)
     return sc;
 }
 
-void be_scene_destroy(BeScene *scene, bool delete_component)
+void be_scene_destroy(BeScene *scene, BeSceneChoice choice)
 {
     if (NULL == scene)
     {
@@ -57,7 +59,7 @@ void be_scene_destroy(BeScene *scene, bool delete_component)
 
     be_system_destroy(scene->system);
     be_renderer_batch_destroy(scene->vertex_batch);
-    if (delete_component)
+    if (BE_SCENE_CHOICE_COMPONENT && choice)
     {
         u32 i = 0;
         for (i = 0; i < scene->numb_component; i++)
@@ -66,7 +68,17 @@ void be_scene_destroy(BeScene *scene, bool delete_component)
         }
     }
 
+    if (BE_SCENE_CHOICE_ENTITY && choice)
+    {
+        u32 i = 0;
+        for (i = 0; i < scene->numb_entity; i++)
+        {
+            be_entity_destroy(scene->entites[i]);
+        }
+    }
+
     DESTROYER(scene->components);
+    DESTROYER(scene->entites);
     DESTROYER(scene);
 }
 
@@ -76,7 +88,19 @@ void be_scene_add_entity(BeScene *scene, BeEntity *entity)
     NULL_CHECKER(scene);
     NULL_CHECKER(entity);
 
+    if (NULL == scene->entites)
+    {
+        scene->entites = malloc(sizeof(BeEntity *) * scene->cap_entity);
+    }
+
+    if (scene->numb_entity >= scene->cap_entity)
+    {
+        scene->cap_entity *= 2;
+        scene->entites = realloc(scene->entites, sizeof(BeScene *) * scene->cap_entity);
+    }
+
     entity->id = scene->numb_entity;
+    scene->entites[scene->numb_entity] = entity;
     scene->numb_entity++;
 }
 
@@ -84,6 +108,11 @@ void be_scene_remove_entity(BeScene *scene, BeEntity *entity)
 {
     NULL_CHECKER(scene);
     NULL_CHECKER(entity);
+    if (entity->id >= scene->numb_entity)
+    {
+        ASSOIATED_FAILED(entity, scene);
+    }
+
     u32 i = 0;
     for (i = 0; i < NUMB_COMPONENT; i++)
     {
@@ -120,6 +149,7 @@ void be_entity_add_component(BeScene *scene, BeEntity *entity, BeComponent *comp
     NULL_CHECKER(component);
 
     // Add to entity
+    component->entity_id = entity->id;
     entity->component_id[component->type] = scene->numb_component;
     entity->has_component[component->type] = true;
 
@@ -142,13 +172,13 @@ void be_entity_add_component(BeScene *scene, BeEntity *entity, BeComponent *comp
     // Add to scene
     if (NULL == scene->components)
     {
-        scene->components = malloc(sizeof(BeComponent*) * scene->cap_component);
+        scene->components = malloc(sizeof(BeComponent *) * scene->cap_component);
     }
 
     if (scene->numb_component >= scene->cap_component / 2)
     {
         scene->cap_component *= 2;
-        scene->components = realloc(scene->components, sizeof(BeComponent*) * scene->cap_component);
+        scene->components = realloc(scene->components, sizeof(BeComponent *) * scene->cap_component);
     }
 
     // if handler component is null, then use default
@@ -162,14 +192,24 @@ void be_entity_add_component(BeScene *scene, BeEntity *entity, BeComponent *comp
     scene->numb_component++;
 }
 
-void be_entity_remove_component(BeScene *scene, BeEntity *entity, BeComponent *comp)
+void be_entity_remove_component(BeScene *scene, BeComponent *comp)
 {
     NULL_CHECKER(scene);
     NULL_CHECKER(scene->components);
-    NULL_CHECKER(entity);
     NULL_CHECKER(comp);
 
+    if (comp->id >= scene->numb_component)
+    {
+        ASSOIATED_FAILED(comp, scene);
+    }
+
+    if (comp->entity_id >= scene->numb_entity)
+    {
+        ASSOIATED_FAILED(scene->entites[comp->entity_id], scene);
+    }
+
     // update entity
+    BeEntity *entity = scene->entites[comp->entity_id];
     entity->component_id[comp->type] = 0;
     entity->has_component[comp->type] = false;
 
