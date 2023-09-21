@@ -28,14 +28,18 @@ extern C
 #define NULL_CHECKER_VAL(X, V)
 #endif
 
-#define DESTROYER(X)             \
+#define DESTROYER(X)                 \
     LOGI(":>Destroying \"%s\"", #X); \
-    free(X);                     \
+    free(X);                         \
     X = NULL
 
-#define NULLER(X)             \
+#define NULLER(X)                 \
     LOGI(":>Nulling \"%s\"", #X); \
     X = NULL
+
+#define ASSOIATED_FAILED(X, Y)                   \
+    LOGE("\"%s\" is not assoiated with \"%s\"", #X, #Y); \
+    return
 
 #ifdef __cplusplus
 }
