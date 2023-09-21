@@ -1,0 +1,90 @@
+#ifndef GIHEX_SCENE_H
+#define GIHEX_SCENE_H
+
+#include <utilities/mangle.h>
+#include <system/component.h>
+#include <system/system.h>
+#include <system/entity.h>
+
+#include <scene/renderer_batch.h>
+
+#ifdef __cplusplus
+extern C
+{
+#endif
+
+    typedef struct _be_scene BeScene;
+
+    /**
+     * @brief BeScene structure
+     */
+    struct _be_scene
+    {
+
+        i32 width;  /**< Width of screen*/
+        i32 height; /**< Height of screen*/
+
+        u32 numb_entity;               /**< Numb of entities*/
+        u32 cap_component;             /**< Capacity of components*/
+        u32 numb_component;            /**< Numb of `BeComponent` */
+        BeComponent **components;      /**< List of pointer's `BeComponents` */
+        BeSystem *system;              /**< System*/
+        BeRendererBatch *vertex_batch; /**< Contain of combination vertex of `BeComponent` that has type `BE_COMPONENT_TYPE_SPRITE`*/
+    };
+
+    /**
+     * @brief Create new scene
+     *
+     * @param width Integer value of screen width
+     * @param height Integer vcalue of screen height
+     * @return Pointer to `BeScene` object
+     */
+    BeScene *be_scene_new(i32 width, i32 height);
+
+    /**
+     * @brief Destroy `BeScene`
+     *
+     * @note All `BeEntity` that asosiated with \a scene is not deleted.
+     * To delete them use `be_entity_destroy(BeEntity *entity)`.
+     *
+     * @param scene Pointer to `BeScene` that will be deleted
+     * @param delete_component If set to \a true, all `BeComponent` asosiated with \a scene will be deleted.
+     */
+    void be_scene_destroy(BeScene * scene, bool delete_component);
+
+    void be_scene_add_entity(BeScene * scene, BeEntity * entity);
+
+    /**
+     * @brief Remove `BeEntity` from `BeScene`
+     *
+     * @note When this function called, `entity` will be removed from asosiated `scene` and delete it from memory. All `BeComponent` that asoiated with `entity`
+     * will be deleted from memory.
+     *
+     * @param scene Pointer to `BeScene` that asosiated with \a entity.
+     * @param entity Pointer to `BeEntity` that will be remove.
+     */
+    void be_scene_remove_entity(BeScene * scene, BeEntity * entity);
+
+    void be_entity_add_component(BeScene * scene, BeEntity * entity, BeComponent * component);
+
+    /**
+     * @brief Remove `BeComponent` from `BeEntity`
+     *
+     * @note When this function called, `comp` will be removed from asosiated entity, but `comp` not destroyed.
+     * Use `be_component_destroyer(BeComponent *comp)` to delete Component from memory.
+     *
+     * @param scene Pointer to `BeScene` that asosiated with pointer \a entity.
+     * @param entity Pointer to `BeEntity` that asosiated with pointer \a comp.
+     * @param comp Pointer to `BeComponent` that will be remove.
+     */
+    void be_entity_remove_component(BeScene * scene, BeEntity * entity, BeComponent * comp);
+
+    void be_scene_system_update(BeScene * scene, BeComponentType type);
+
+    void be_scene_draw(BeScene * scene);
+
+#ifdef __cplusplus
+}
+#endif
+
+#endif /* GIHEX_SCENE_H */
