@@ -70,6 +70,11 @@ bool be_engine_init(BeEngine *engine, BeEngineType type)
     return true;
 }
 
+void be_engine_set_startup_long(BeEngine *engine, u32 time_millis)
+{
+    engine->startup_time_millis = time_millis;
+}
+
 void be_engine_set_startup_scene(BeEngine *engine, BeScene *scene)
 {
     engine->startup_scene = scene;

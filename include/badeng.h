@@ -64,6 +64,8 @@ extern C
     void be_engine_destroy(BeEngine * engine);
 
     void be_engine_set_startup_scene(BeEngine * engine, BeScene * scene);
+    
+    void be_engine_set_startup_long(BeEngine * engine, u32 time_millis);
 
 #ifdef __cplusplus
 }
