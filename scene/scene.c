@@ -13,7 +13,7 @@ static void be_scene_remove_component(BeScene *scene, BeComponent *comp)
     if (offset == scene->numb_component)
     {
         scene->numb_component--;
-        scene->components[offset] = NULL;
+        scene->components[comp->id] = NULL;
         return;
     }
 

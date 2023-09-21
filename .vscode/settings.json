@@ -8,11 +8,8 @@
     "cmake.buildDirectory": "${workspaceFolder}/.build",
     "files.associations": {
         "*.cgml": "html",
-        "badeng.h": "c",
-        "sdl_log.h": "c",
-        "memory.h": "c",
-        "features.h": "c",
-        "entity.h": "c"
+        "*.h": "c",
+
     },
     "licenser.disableAutoHeaderInsertion": true,
     "licenser.projectName": "badeng",

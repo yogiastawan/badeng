@@ -38,28 +38,28 @@ void be_system_remove_component(BeSystem *system, BeComponent *comp)
     }
 
     // update system
-    si offset = comp->index_in_system + 1; // 1 is range
+    u32 offset = comp->index_in_system + 1; // 1 is range
     if (offset == system->numb_slice_component[comp->type])
     {
         system->numb_slice_component[comp->type]--;
-        system->id_slice_component[comp->type][offset] = 0;
+        system->id_slice_component[comp->type][comp->index_in_system] = 0;
         return;
     }
 
-    si size_pack = system->numb_slice_component[comp->type] - offset;
-    si *tmp = (si *)malloc(sizeof(si) * size_pack);
+    u32 size_pack = system->numb_slice_component[comp->type] - offset;
+    u32 *tmp = (u32 *)malloc(sizeof(u32) * size_pack);
     // copy from system to tmp;
-    memcpy(tmp, &(system->id_slice_component[comp->type][offset]), sizeof(si) * size_pack);
+    memcpy(tmp, &(system->id_slice_component[comp->type][offset]), sizeof(u32) * size_pack);
     // realloc
     system->numb_slice_component[comp->type]--;
     if (system->numb_slice_component[comp->type] < system->cap_slice_component[comp->type] / 2)
     {
         system->cap_slice_component[comp->type] = system->cap_slice_component[comp->type] / 2;
-        system->id_slice_component[comp->type] = realloc(system->id_slice_component[comp->type], sizeof(si) * system->cap_slice_component[comp->type]);
+        system->id_slice_component[comp->type] = realloc(system->id_slice_component[comp->type], sizeof(u32) * system->cap_slice_component[comp->type]);
     }
 
     // copy back to system
-    memcpy(&(system->id_slice_component[comp->type][comp->index_in_system]), tmp, sizeof(si) * (size_pack + 1));
+    memcpy(&(system->id_slice_component[comp->type][comp->index_in_system]), tmp, sizeof(u32) * (size_pack + 1));
     DESTROYER(tmp);
 }
 
