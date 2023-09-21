@@ -22,8 +22,7 @@ void be_renderer_batch_destroy(BeRendererBatch *renderer)
         free(renderer->vertexs);
         renderer->vertexs = NULL;
     }
-    free(renderer);
-    renderer = NULL;
+    DESTROYER(renderer);
 }
 void be_renderer_batch_add_vertexs(BeRendererBatch *renderer, BeComponent *comp)
 {
@@ -86,6 +85,5 @@ void be_renderer_batch_remove(BeRendererBatch *renderer, BeComponent *comp)
     memcpy(&(renderer->vertexs[spr->offset]), tmp, sizeof(f32) * (renderer->numb_vertex - offset));
 
     // free temp;
-    free(tmp);
-    tmp = NULL;
+    DESTROYER(tmp);
 }
