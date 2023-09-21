@@ -8,7 +8,6 @@ extern C
 {
 #endif
 
-
     typedef struct _be_system BeSystem;
     struct _be_system
     {
@@ -17,7 +16,11 @@ extern C
         u32 *id_slice_component[NUMB_COMPONENT];
     };
 
-    BeSystem be_system_new();
+    BeSystem *be_system_new();
+
+    void be_system_destroy(BeSystem *system);
+
+    void be_system_remove_component(BeSystem * system, BeComponent * comp);
 
     BeComponentHandler be_system_get_default_handler(BeComponentType type);
 
@@ -25,6 +28,6 @@ extern C
 
 #ifdef __cplusplus
 }
-#endif/* GIHEX_SYSTEM_H */
+#endif /* GIHEX_SYSTEM_H */
 
-#endif/* GIHEX_SYSTEM_H */
+#endif /* GIHEX_SYSTEM_H */
