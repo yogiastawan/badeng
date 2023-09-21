@@ -27,13 +27,13 @@ void be_scene_manager_destroy(BeSceneManager *manager)
     DESTROYER(manager);
 }
 
-void be_scene_manager_start_scene(BeSceneManager *manager, BeScene *scene, bool destroy_current_scene)
+void be_scene_manager_start_scene(BeSceneManager *manager, BeScene *scene, bool destroy_current_scene, BeSceneChoice choice)
 {
     NULL_CHECKER(manager);
     NULL_CHECKER(scene);
     if (destroy_current_scene && manager->current_scene)
     {
-        be_scene_destroy(manager->current_scene, true);
+        be_scene_destroy(manager->current_scene, choice);
     }
 
     manager->current_scene = scene;

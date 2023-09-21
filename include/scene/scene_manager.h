@@ -22,7 +22,7 @@ extern C
 
     void be_scene_manager_destroy(BeSceneManager * manager);
 
-    void be_scene_manager_start_scene(BeSceneManager * manager, BeScene * scene, bool destroy_current_scene);
+    void be_scene_manager_start_scene(BeSceneManager * manager, BeScene * scene, bool destroy_current_scene, BeSceneChoice choice);
 
     BeScene *be_scene_manager_get_current_scene(BeSceneManager * manager);
 

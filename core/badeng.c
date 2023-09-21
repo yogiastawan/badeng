@@ -70,8 +70,9 @@ bool be_engine_init(BeEngine *engine, BeEngineType type)
     return true;
 }
 
-void be_engine_set_startup_long(BeEngine *engine, u32 time_millis)
+void be_engine_set_startup_length(BeEngine *engine, u32 time_millis)
 {
+    NULL_CHECKER(engine);
     engine->startup_time_millis = time_millis;
 }
 
@@ -92,7 +93,7 @@ void be_engine_run(BeEngine *engine)
     }
     engine_already_run = true;
 
-    be_scene_manager_start_scene(engine->scene_manager, engine->startup_scene, false);
+    be_scene_manager_start_scene(engine->scene_manager, engine->startup_scene, false, BE_SCENE_CHOICE_DEFAULT);
 
     bool quite = false;
     u32 time_start = SDL_GetTicks();
@@ -122,7 +123,7 @@ void be_engine_run(BeEngine *engine)
         if (SDL_GetTicks() - time_start >= engine->startup_time_millis)
         {
             LOGI("Start main scene");
-            be_scene_manager_start_scene(engine->scene_manager, engine->main_scene, true);
+            be_scene_manager_start_scene(engine->scene_manager, engine->main_scene, true, BE_SCENE_CHOICE_COMPONENT | BE_SCENE_CHOICE_ENTITY);
             on_startup = false;
         }
     }

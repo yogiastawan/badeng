@@ -41,20 +41,26 @@ extern C
 
     typedef struct _be_engine BeEngine;
 
+    /**
+     * @brief BeEngine data structure
+     */
     struct _be_engine
     {
-        /* data */
-        i32 width;
-        i32 height;
 
-        SDL_Window *window;
-
+        i32 width;          /**< Width of screen*/
+        i32 height;         /**< Height of screen*/
+        SDL_Window *window; /**< Window context*/
         BeSceneManager *scene_manager;
         BeScene *startup_scene;
         u32 startup_time_millis;
         BeScene *main_scene;
     };
 
+    /**
+     * @brief Create new `BeEngine`
+     *
+     * @return Pointer of `BeEngine`
+     */
     BeEngine *be_engine_new();
 
     bool be_engine_init(BeEngine * engine, BeEngineType type);
@@ -64,11 +70,17 @@ extern C
     void be_engine_destroy(BeEngine * engine);
 
     void be_engine_set_startup_scene(BeEngine * engine, BeScene * scene);
-    
-    void be_engine_set_startup_long(BeEngine * engine, u32 time_millis);
+
+    /**
+     * @brief Set `BeEngine` length time in milliseconds
+     *
+     * @param engine Pointer to BeEngine that will be set
+     * @param u32   Time length in milliseconds
+     */
+    void be_engine_set_startup_length(BeEngine * engine, u32 time_millis);
 
 #ifdef __cplusplus
 }
-#endif /* GIHEX_BADENG_H */
+#endif
 
 #endif /* GIHEX_BADENG_H */
