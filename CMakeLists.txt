@@ -16,7 +16,11 @@ add_subdirectory(thirdparties/SDL2-2.28.3)
 add_library(badeng SHARED core/badeng.c
         system/entity.c
         system/component.c
-        system/system.c)
+        system/system.c
+        scene/scene.c
+        scene/renderer_batch.c
+        scene/scene_manager.c
+        system/component/com_sprite.c)
 target_link_libraries(
         badeng
         
