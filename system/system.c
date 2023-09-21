@@ -32,6 +32,11 @@ void be_system_destroy(BeSystem *system)
 
 void be_system_remove_component(BeSystem *system, BeComponent *comp)
 {
+    if (comp->index_in_system >= system->numb_slice_component[comp->type])
+    {
+        ASSOIATED_FAILED(comp, system);
+    }
+
     // update system
     si offset = comp->index_in_system + 1; // 1 is range
     if (offset == system->numb_slice_component[comp->type])
