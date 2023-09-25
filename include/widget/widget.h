@@ -24,6 +24,7 @@ struct _be_widget_child{
 
 BeWidgetChild* be_widget_child_new();
 void be_widget_child_destroy(BeWidgetChild* widget);
+void be_widget_child_add(BeWidgetChild* wdgt, BeEntity* entity);
 
 typedef struct _be_widget_parent BeWidgetParent;
 

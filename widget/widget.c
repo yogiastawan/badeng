@@ -28,3 +28,28 @@ void be_widget_child_destroy(BeWidgetChild* widget){
     
     DESTROYER(widget);
 }
+
+BeWidgetParent* be_widget_parent_new(u32 parent_id){
+    BeWidgetParent* prn=(BeWidgetParent*)malloc(sizeof(BeWidgetParent));
+    
+    prn->parent_id=parent_id;
+    
+    return prn;
+}izeof(u32)*wdgt->cap_child);
+        wdgt->temp_child_entities=(BeEntity*)malloc(sizeof(BeEntity*)*wdgt->cap_child);
+    }
+    
+    if(wdgt->numb_child>=wdgt->cap_child){
+        wdgt->cap_child*=2;
+        wdgt->childs=realloc(wdgt->childs, sizeof(u32)*wdgt->cap_child);
+        wdgt->temp_child_entities=realloc(wdgt->temp_child_entities,sizeof(BeEntity*)*wdgt->childs);
+    }
+    
+    entity->id=wdgt->numb_child;
+    
+    wdgt->childs[wdgt->numb_child]=entity->id;
+    wdgt->temp_child_entities[wdgt->numb_child]=entity;
+    
+    wdgt->numb_child++;
+}
+
