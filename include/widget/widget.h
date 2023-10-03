@@ -8,6 +8,11 @@
 #include <system/component.h>
 #include <scene/scene.h>
 
+#define RETURN_IF_NOT_WIDGET_COMPONENT(E,T,C) if(!E->has_components[T]){{\
+											LOGE("\"%s\" does not has component: \"%s\"",#E,#C);
+											return; 	
+										}
+
 #define DEFAULT_CHILD_CAPACITY 4
 
 #ifdef __cplusplus

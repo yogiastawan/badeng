@@ -7,10 +7,7 @@
 BeWidgetParent* be_widget_parent_new(BeWidget *widget){
 	NULL_CHECKER(widget);
 	
-	if(!widget->entity->has_component[BE_WIDGET_TYPE_WIDGET_CHILD]){
-		LOGE("widget does not has component: Widget Child ");
-		return;
-	}
+	RETURN_IF_NOT_WIDGET_COMPONENT(widget->entity,BE_WIDGET_TYPE_WIDGET_CHILD,BeWidgetChild);
 	
 	BeWidgetParent* prn=(BeWidgetParent*)malloc(sizeof(BeWidgetParent);
 	prn->parent_id=widget->entity->id;

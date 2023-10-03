@@ -18,7 +18,7 @@ struct _be_widget_parent{
 
 BeWidgetParent* be_widget_parent_new(u32 entity_id);
 
-void be_widget_parent_destroy(BeWidgetParent* widgdet);
+void be_widget_parent_destroy(BeWidgetParent* widget);
 
 #ifdef __cplusplus
 }

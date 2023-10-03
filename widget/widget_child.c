@@ -2,7 +2,7 @@
 
 #include<string.h>
 
-#include<widgdet/widget_parent.h>
+#include<widget/widget_parent.h>
 
 BeWidgetChild* be_widget_child_new(){
     BeWidgetChild* wdg=(BeWidgetChild*)malloc(sizeof(BeWidgetChild));
@@ -39,14 +39,9 @@ void be_widget_add_child(BeWidget *widget, BeWidget *child){
         return;
     }
     
-    BeEntity*entity=widget->entity;
+    RETURN_IF_NOT_WIDGET_COMPONENT(widget->entity,BE_WIDGET_TYPE_WIDGET_CHILD,BeWidgetChild);
     
-    if(!entity->has_component[BE_WIDGET_TYPE_WIDGET_CHILD]){
-        LOGE("Entity doesn't has component: widget child");
-        return;
-    }
-    
-    u32 widget_child_id=entity->component_id[BE_WIDGET_TYPE_WIDGET_CHILD];
+    u32 widget_child_id=widget->entity->component_id[BE_WIDGET_TYPE_WIDGET_CHILD];
     // Get widget child component here
     BeWidgetChild *comp=widget->scene->components[widget_child_id];//=
     
@@ -63,7 +58,7 @@ void be_widget_add_child(BeWidget *widget, BeWidget *child){
     comp->childs[comp->numb_child]=child->entity->id;
     
     //add parent widget component to child
-    BeWidgetParent *p=be_widget_parent_new(widgdet);
+    BeWidgetParent *p=be_widget_parent_new(widget);
     
     be_entity_add_component(child->scene,child->entity,p);
     comp->numb_child++;
@@ -77,6 +72,10 @@ void be_widget_remove_child(BeWidget*widget, BeWidget*child_widget){
 		LOGE("Widget and child are not in same scene");
 		return;
 	}
+	
+	RETURN_IF_NOT_WIDGET_COMPONENT(child_widget->entity,BE_WIDGET_TYPE_WIDGET_PARENT,BeWidgetParent);
+
+	RETURN_IF_NOT_WIDGET_COMPONENT(widget->entity,BE_WIDGET_TYPE_WIDGET_CHILD,BeWidgetChild);
 	
 	// get component widget child
 	u32 id_comp=child_widget->entity->component_id[BE_WIDGET_TYPE_WIDGET_PARENT];
