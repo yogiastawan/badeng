@@ -5,6 +5,8 @@
 
 #include <utilities/mangle.h>
 #include <system/entity.h>
+#include <system/component.h>
+#include <scene/scene.h>
 
 #define DEFAULT_CHILD_CAPACITY 4
 
@@ -13,34 +15,20 @@ extern C
 {
 #endif
 
-typedef struct _be_widget_child BeWidgetChild;
+typedef struct _be_widget BeWidget;
 
-struct _be_widget_child{
-    u32 numb_child;
-    u32 cap_child;
-    u32 *childs;
-    BeEntity *temp_child_entities;
-};
-
-BeWidgetChild* be_widget_child_new();
-void be_widget_child_destroy(BeWidgetChild* widget);
-void be_widget_child_add(BeWidgetChild* wdgt, BeEntity* entity);
-
-typedef struct _be_widget_parent BeWidgetParent;
-
-struct _be_widget_parent{
-    u32 parent;
+struct _be_widget{
+    BeScene *scene;
+    BeEntity *entity;
 }
 
-BeWidgetParent* be_widget_parent_new();
+BeWidget *be_widget_new(BeScene*scene);
 
-void be_widget_parent_destroy(BeWidgetParent* widgdet);
-
+void be_widget_destroy(BeWidget*widget);
 
 
 #ifdef __cplusplus
 }
 #endif
 
-
-#endif
+#endif /*GIHEX_WIDGET_H*/
