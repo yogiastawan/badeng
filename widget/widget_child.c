@@ -44,7 +44,7 @@ void be_widget_add_child(BeWidget *widget, BeWidget *child){
     
     u32 widget_child_id=widget->entity->component_id[BE_WIDGET_TYPE_WIDGET_CHILD];
     // Get widget child component here
-    BeWidgetChild *c=widget->scene->components[widget_child_id];//=
+    BeComponent *c=widget->scene->components[widget_child_id];//=
     BeWidgetChild *comp=c->component;
     
     if(NULL==comp->childs){
