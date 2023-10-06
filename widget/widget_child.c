@@ -2,6 +2,7 @@
 
 #include<string.h>
 
+#include<system/component.h>
 #include<widget/widget_parent.h>
 
 BeWidgetChild* be_widget_child_new(){
@@ -43,7 +44,8 @@ void be_widget_add_child(BeWidget *widget, BeWidget *child){
     
     u32 widget_child_id=widget->entity->component_id[BE_WIDGET_TYPE_WIDGET_CHILD];
     // Get widget child component here
-    BeWidgetChild *comp=widget->scene->components[widget_child_id];//=
+    BeWidgetChild *c=widget->scene->components[widget_child_id];//=
+    BeWidgetChild *comp=c->component;
     
     if(NULL==comp->childs){
         comp->childs=(u32*)malloc(sizeof(u32)*wdgt->cap_child);
@@ -79,10 +81,12 @@ void be_widget_remove_child(BeWidget*widget, BeWidget*child_widget){
 	
 	// get component widget child
 	u32 id_comp=child_widget->entity->component_id[BE_WIDGET_TYPE_WIDGET_PARENT];
-	BeWidgetParent*child_comp=child_widget->scene->components[id_comp];
+	BeComponent*c_comp=child_widget->scene->components[id_comp];
+	BeWidgetParent*child_comp=c_comp->component;
 	
 	u32 id_parent=widget->entity->component_id[BE_WIDGET_TYPE_WIDGET_CHILD];
-	BeWidgetChild*parent_comp=widget->scene->components[id_parent];
+	BeComponent*p_comp=widget->scene->components[id_parent];
+	BeWidgetChild*parent_comp=p->component;
 	
 	
 	
