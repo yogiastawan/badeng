@@ -19,3 +19,13 @@ BeLayoutPadding *be_layout_padding_new(u32 top,u32 bottom,u32 left,u32 right){
     
     return padding;
 }
+
+BeLayoutPadding *be_layout_padding_new(u32 top,u32 bottom, u32 left, u32 right){
+	BeLayoutMargin*m=(BeLayoutMargin*)malloc(sizeof(BeLayoutMargin));
+	m->top=top;
+	m->bottom=bottom;
+	m->left=left;
+	m->right=right;
+	
+	return m;
+}
