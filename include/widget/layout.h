@@ -9,20 +9,20 @@ extern C
 {
 #endif
 
-typedef enum _be_linear_orientation BeLinearOrientation;
+typedef enum _be_orientation BeOrientation;
 
 enum _be_linear_orientation{
     BE_LINEAR_ORIENTATION_HORIZONTAL,
     BE_LINEAR_ORIENTATION_VERTICAL
 };
 
-typedef _be_linear_layout BeLinearLayout;
+typedef _be_linear_orientation BeLinearOrientation;
 
-struct _be_linear_layout{
-    BeLinearOrientation orientation;
+struct _be_linear_orientation{
+    BeOrientation orientation;
 };
 
-BeLinearLayout* be_linear_layout_new(BeLinearOrientation*orientation);
+BeLinearOrientation* be_linear_orientation_new(BeOrientation*orientation);
 
 typedef _be_layout_padding BeLayoutPadding;
 

@@ -2,7 +2,7 @@
 
 #include<stdlib.h>
 
-BeLinearLayout* be_linear_layout_new(BeLinearOrientation*orientation){
+BeLinearLayout* be_linear_orientation_new(BeOrientation*orientation){
     BeLinearLayout *layout=(BeLinearLayout*)malloc(sizeof(BeLinearLayout));
     
     layout->orientation=orientation;
