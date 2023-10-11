@@ -30,7 +30,10 @@ void be_widget_add_child(BeWidget *widget, BeWidget *child){
     NULL_CHECKER(widget);
     NULL_CHECKER(child);
     
-    if(child->entity->has_component[BE_WIDGET_TYPE_WIDGET_PARENT]){
+    BeEntity *child_entity=child->scene->entities[child->entity_id];
+    BeEntity *widget_child=widget->scene->entites[widget->entity_id];
+    
+    if(child_entity->has_component[BE_WIDGET_TYPE_WIDGET_PARENT]){
     	LOGE("Child already added to another parent");
     	return;
     }
@@ -40,9 +43,9 @@ void be_widget_add_child(BeWidget *widget, BeWidget *child){
         return;
     }
     
-    RETURN_IF_NOT_WIDGET_COMPONENT(widget->entity,BE_WIDGET_TYPE_WIDGET_CHILD,BeWidgetChild);
+    RETURN_IF_NOT_WIDGET_COMPONENT(widget_entity,BE_WIDGET_TYPE_WIDGET_CHILD,BeWidgetChild);
     
-    u32 widget_child_id=widget->entity->component_id[BE_WIDGET_TYPE_WIDGET_CHILD];
+    u32 widget_child_id=widget_entity->component_id[BE_WIDGET_TYPE_WIDGET_CHILD];
     // Get widget child component here
     BeComponent *c=widget->scene->components[widget_child_id];//=
     BeWidgetChild *comp=c->component;
@@ -57,12 +60,12 @@ void be_widget_add_child(BeWidget *widget, BeWidget *child){
     }
     
     // add entity id
-    comp->childs[comp->numb_child]=child->entity->id;
+    comp->childs[comp->numb_child]=child_entity->id;
     
     //add parent widget component to child
     BeWidgetParent *p=be_widget_parent_new(widget);
     
-    be_entity_add_component(child->scene,child->entity,p);
+    be_entity_add_component(child->scene,child_entity,p);
     comp->numb_child++;
 }
 
@@ -70,25 +73,26 @@ void be_widget_remove_child(BeWidget*widget, BeWidget*child_widget){
 	NULL_CHECKER(widget);
 	NULL_CHECKER(child_widget);
 	
+	BeEntity*widget_entity=widget->scene->entities[widget->entity_id];
+	BeEntity *child_widget_entity=child_widget->scene->entites[child_widget->entity_id];
+	
 	if(widget->scene!=child_widget->scene){
 		LOGE("Widget and child are not in same scene");
 		return;
 	}
 	
-	RETURN_IF_NOT_WIDGET_COMPONENT(child_widget->entity,BE_WIDGET_TYPE_WIDGET_PARENT,BeWidgetParent);
+	RETURN_IF_NOT_WIDGET_COMPONENT(child_widget_entity,BE_WIDGET_TYPE_WIDGET_PARENT,BeWidgetParent);
 
-	RETURN_IF_NOT_WIDGET_COMPONENT(widget->entity,BE_WIDGET_TYPE_WIDGET_CHILD,BeWidgetChild);
+	RETURN_IF_NOT_WIDGET_COMPONENT(widget_entity,BE_WIDGET_TYPE_WIDGET_CHILD,BeWidgetChild);
 	
 	// get component widget child
-	u32 id_comp=child_widget->entity->component_id[BE_WIDGET_TYPE_WIDGET_PARENT];
+	u32 id_comp=child_widget_entity->component_id[BE_WIDGET_TYPE_WIDGET_PARENT];
 	BeComponent*c_comp=child_widget->scene->components[id_comp];
 	BeWidgetParent*child_comp=c_comp->component;
 	
-	u32 id_parent=widget->entity->component_id[BE_WIDGET_TYPE_WIDGET_CHILD];
+	u32 id_parent=widget_entity->component_id[BE_WIDGET_TYPE_WIDGET_CHILD];
 	BeComponent*p_comp=widget->scene->components[id_parent];
 	BeWidgetChild*parent_comp=p->component;
-	
-	
 	
 	u32 offset=child_comp->index_entity_in_parent+1;
 	if(offset==parent_comp->numb_child){
@@ -110,4 +114,7 @@ void be_widget_remove_child(BeWidget*widget, BeWidget*child_widget){
 	
 	free(tmp);
 	tmp=NULL;
+	
+	//do not delete child_widget here
+	//be_widget_destroy(child_widget);
 }

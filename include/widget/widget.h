@@ -24,7 +24,7 @@ typedef struct _be_widget BeWidget;
 
 struct _be_widget{
     BeScene *scene;
-    BeEntity *entity;
+    u32 *entity_id;
 }
 
 BeWidget *be_widget_new(BeScene*scene);
