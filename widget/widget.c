@@ -10,6 +10,7 @@ BeWidget *be_widget_new(BeScene*scene){
     BeWidget *widget=(BeWidget*)malloc(sizeof(BeWidget));
     widget->scene=scene;
     widget->entity=be_entity_new();
+    be_scene_add_entity(widget->scene,widget->entity);
     return widget;
 }
 

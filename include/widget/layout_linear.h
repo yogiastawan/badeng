@@ -20,6 +20,9 @@ void be_layout_linear_add_children(BeLayoutLinear *layout, BeWidget *child);
 
 void be_layout_linear_remove_children(BeLayoutLinear *layout, BeWidget *child);
 
+void be_layout_linear_set_margin(u32 to,u32 bottom,,u22 left, u32 right);
+
+void be_layout_linear_set_padding(u32 top,u32 bottom, u32 left,u32 right);
 
 #ifdef _cplusplus
 }
