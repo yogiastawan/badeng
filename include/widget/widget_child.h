@@ -23,6 +23,8 @@ void be_widget_add_child(BeWidget *widget, BeWidget *child);
 
 void be_widget_remove_child(BeWidget*widget, BeWidget*child);
 
+void be_widget_clear_child(BeWidget*widget);
+
 ifdef __cplusplus
 }
 #endif

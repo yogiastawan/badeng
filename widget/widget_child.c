@@ -115,6 +115,24 @@ void be_widget_remove_child(BeWidget*widget, BeWidget*child_widget){
 	free(tmp);
 	tmp=NULL;
 	
-	//do not delete child_widget here
-	//be_widget_destroy(child_widget);
+	be_widget_destroy(child_widget);
+}
+
+void be_widget_clear_child(BeWidget*widget){
+	NULL_CHECKER(widget);
+	
+	BeEntity*widget_entity=widget->scene->entities[widget->entity_id];
+	
+	RETURN_IF_NOT_WIDGET_COMPONENT(widget_entity,BE_WIDGET_TYPE_WIDGET_CHILD,BeWidgetChild);
+	
+	u32 id_parent=widget_entity->component_id[BE_WIDGET_TYPE_WIDGET_CHILD];
+	BeComponent*p_comp=widget->scene->components[id_parent];
+	BeWidgetChild*parent_comp=p->component;
+	u32 i=0;
+	// delete all entity
+	for(i=0;i<parent_comp->numb_child;i++){
+		be_scene_remove_entity(widget->scene->components[parent_comp->childs[i]]);
+	}
+	
+	
 }
