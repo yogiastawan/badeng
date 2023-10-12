@@ -13,10 +13,10 @@ typedef struct _be_widget_parent BeWidgetParent;
 
 struct _be_widget_parent{
     u32 parent_id;
-    u32 inxex_entity_in_parent;
+    u32 index_in_parent;
 }
 
-BeWidgetParent* be_widget_parent_new(u32 entity_id);
+BeWidgetParent* be_widget_parent_new(BeWidget*widget);
 
 void be_widget_parent_destroy(BeWidgetParent* widget);
 

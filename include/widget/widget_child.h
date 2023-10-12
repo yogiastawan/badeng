@@ -13,7 +13,7 @@ typedef struct _be_widget_child BeWidgetChild;
 struct _be_widget_child{
     u32 numb_child;
     u32 cap_child;
-    u32 *childs;
+    BeWidget **childs;
 };
 
 BeWidgetChild* be_widget_child_new();

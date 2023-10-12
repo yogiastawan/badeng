@@ -51,16 +51,16 @@ void be_widget_add_child(BeWidget *widget, BeWidget *child){
     BeWidgetChild *comp=c->component;
     
     if(NULL==comp->childs){
-        comp->childs=(u32*)malloc(sizeof(u32)*wdgt->cap_child);
+        comp->childs=(BeWidget**)malloc(sizeof(BeWidget*)*wdgt->cap_child);
     }
     
     if(comp->numb_child>=wdgt->cap_child){
         comp->cap_child*=2;
-        comp->childs=(u32*)realloc(wdgt->childs,sizeof(u32)*wdgt->cap_child);
+        comp->childs=(BeWidget**)realloc(wdgt->childs,sizeof(BeWidget*)*wdgt->cap_child);
     }
     
-    // add entity id
-    comp->childs[comp->numb_child]=child_entity->id;
+    // add widget
+    comp->childs[comp->numb_child]=child;
     
     //add parent widget component to child
     BeWidgetParent *p=be_widget_parent_new(widget);
@@ -94,22 +94,22 @@ void be_widget_remove_child(BeWidget*widget, BeWidget*child_widget){
 	BeComponent*p_comp=widget->scene->components[id_parent];
 	BeWidgetChild*parent_comp=p->component;
 	
-	u32 offset=child_comp->index_entity_in_parent+1;
+	u32 offset=child_comp->index_in_parent+1;
 	if(offset==parent_comp->numb_child){
-		parent_comp->childs[offset]=-1;
+		be_widget_destroy(parent_comp->childs[offset]);
 		parent_comp->numb_child--;
 		return;
 	}
 	
-	u32*tmp=(u32*)malloc(sizeof(u32)*(parent_comp->numb_child-offset));
+	BeWidget**tmp=(BeWidget**)malloc(sizeof(BeWidget*)*(parent_comp->numb_child-offset));
 	memcpy(tmp,&(parent_comp->childs[offset]),parent_comp->numb_child-offset);
 	
 	if(parent_comp->numb_child<parent_comp->cap_child){
 		parent_comp->cap_child*=2;
-		parent_comp->childs=realloc(parent_comp->childs,sizeof(u32)*(parent_comp->numb_child-1);
+		parent_comp->childs=realloc(parent_comp->childs,sizeof(BeWidget*)*(parent_comp->numb_child-1);
 	}
 	
-	memcpy(&(parent_comp->childs[child_comp->index_entity_in_parent]),tmp,sizeof(u32)*(parent_comp->numb_child-offset));
+	memcpy(&(parent_comp->childs[child_comp->index_entity_in_parent]),tmp,sizeof(BeWidget*)*(parent_comp->numb_child-offset));
 	parent_comp->numb_child--;
 	
 	free(tmp);
@@ -129,10 +129,14 @@ void be_widget_clear_child(BeWidget*widget){
 	BeComponent*p_comp=widget->scene->components[id_parent];
 	BeWidgetChild*parent_comp=p->component;
 	u32 i=0;
-	// delete all entity
+	// delete all child widget
 	for(i=0;i<parent_comp->numb_child;i++){
-		be_scene_remove_entity(widget->scene->components[parent_comp->childs[i]]);
+		be_widget_destroy(parent_comp->childs[i]);
 	}
 	
-	
+	free(parent_comp->childs);
+	parent->childs=NULL;
+	parent_comp->childs=(BeWidget**)malloc(sizeof(BeWidget*)*DEFAULT_CHILD_CAPACITY);
+	parent_comp->numb_child=0;
+	parent_comp->cap_child=DEFAULT_CHILD_CAPACITY;
 }

@@ -14,7 +14,7 @@ BeWidgetParent* be_widget_parent_new(BeWidget *widget){
 	
 	// get index of widget child component
 	u32 id_comp=widget->entity->component_id[BE_WIDGET_TYPE_WIDGET_CHILD];
-	prn->index_entity_in_parent=widget->scene->components[id_comp]->numb_child;
+	prn->index_in_parent=widget->scene->components[id_comp]->numb_child;
 	
 	return prn;
 }
