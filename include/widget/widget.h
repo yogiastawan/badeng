@@ -8,34 +8,35 @@
 #include <system/component.h>
 #include <scene/scene.h>
 
-#define RETURN_IF_NOT_WIDGET_COMPONENT(E,T,C) if(!E->has_components[T]){{\
-											LOGE("\"%s\" does not has component: \"%s\"",#E,#C);\
-											return; 	\
-										}
+#define RETURN_IF_NOT_WIDGET_COMPONENT(E, T, C)                    \
+	if (!E->has_components[T])                                     \
+	{                                                              \
+		{                                                          \
+			LOGE("\"%s\" does not has component: \"%s\"", #E, #C); \
+			return;                                                \
+		}
 
 #define DEFAULT_CHILD_CAPACITY 4
 
 #ifdef __cplusplus
 extern C
 {
-#endif
+#endif/* GIHEX_WIDGET_H */
 
-//TODO: change be widget to component that hold BeSene pointer only
-typedef BeEntity BeWidget;
+	typedef struct _be_widget BeWidget;
 
-typedef struct _be_widget_t BeWidgetType;
+	struct _be_widget
+	{
+		BeScene *scene;
+		u32 entity_id;
+	};
 
-struct _be_widget_t{
-    BeScene *scene;
-}
+	BeWidget *be_widget_new(BeScene * scene);
 
-BeWidgetType *be_widget_type_new(BeScene*scene);
-
-void be_widget_type_destroy(BeWidgetType*widget);
-
+	void be_widget_destroy(BeWidget * widget);
 
 #ifdef __cplusplus
 }
-#endif
+#endif/* GIHEX_WIDGET_H */
 
 #endif /*GIHEX_WIDGET_H*/

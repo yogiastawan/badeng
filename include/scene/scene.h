@@ -35,7 +35,7 @@ extern C
         i32 height;                    /**< Height of screen*/
         u32 numb_entity;               /**< Numb of entities*/
         u32 cap_entity;                /**< Capacity of entities*/
-        BeEntity **entites;            /**< List of `BeEntity` pointers*/
+        BeEntity **entities;            /**< List of `BeEntity` pointers*/
         u32 cap_component;             /**< Capacity of components*/
         u32 numb_component;            /**< Numb of `BeComponent` */
         BeComponent **components;      /**< List of `BeComponents` pointers */

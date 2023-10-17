@@ -20,7 +20,12 @@ add_library(badeng SHARED core/badeng.c
         scene/scene.c
         scene/renderer_batch.c
         scene/scene_manager.c
-        system/component/com_sprite.c)
+        system/component/com_sprite.c
+        widget/widget.c
+        widget/widget_parent.c
+        widget/widget_child.c
+        widget/layout.c
+        widget/layout_linear.c)
 target_link_libraries(
         badeng
         
