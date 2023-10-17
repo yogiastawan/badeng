@@ -19,7 +19,7 @@ struct _be_widget_child{
 BeWidgetChild* be_widget_child_new();
 void be_widget_child_destroy(BeWidgetChild* widget);
 
-void be_widget_add_child(BeWidget *widget, BeWidget *child);
+void be_widget_add_child(BeScene*scene,BeWidget *widget, BeWidget *child);
 
 void be_widget_remove_child(BeWidget*widget, BeWidget*child);
 

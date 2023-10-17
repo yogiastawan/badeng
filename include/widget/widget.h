@@ -20,16 +20,18 @@ extern C
 {
 #endif
 
-typedef struct _be_widget BeWidget;
+//TODO: change be widget to component that hold BeSene pointer only
+typedef BeEntity BeWidget;
 
-struct _be_widget{
+typedef struct _be_widget_t BeWidgetType;
+
+struct _be_widget_t{
     BeScene *scene;
-    u32 entity_id;
 }
 
-BeWidget *be_widget_new(BeScene*scene);
+BeWidgetType *be_widget_type_new(BeScene*scene);
 
-void be_widget_destroy(BeWidget*widget);
+void be_widget_type_destroy(BeWidgetType*widget);
 
 
 #ifdef __cplusplus
