@@ -37,12 +37,10 @@ void be_linear_layout_destroy(BeScene *scene, BeLayoutLinear *layout)
         return;
     }
 
-    // TODO delete all child's entity in scene
+    // delete all child's entity in scene
     be_widget_clear_child(scene, layout);
 
     be_widget_destroy(scene, layout);
-
-    // user must delete childs widget manualy
 }
 
 void be_layout_linear_set_orientation(BeScene *scene, BeLayoutLinear *layout, BeLinearOrientation orientation)
