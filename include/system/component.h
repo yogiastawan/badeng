@@ -20,20 +20,12 @@
 #include <stdbool.h>
 
 #include <utilities/mangle.h>
+#include <system/component_type.h>
 
 #ifdef __cplusplus
 extern C
 {
 #endif
-
-    typedef enum _be_component_type BeComponentType;
-    enum _be_component_type
-    {
-        BE_COMPONENT_TYPE_VISIBILITY = 0,
-        BE_COMPONENT_TYPE_POSITION,
-        BE_COMPONENT_TYPE_SPRITE,
-        NUMB_COMPONENT
-    };
 
     typedef struct _be_component BeComponent;
     typedef void (*BeComponentHandler)(BeComponent *component);

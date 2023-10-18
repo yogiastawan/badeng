@@ -1,7 +1,9 @@
 #include <widget/widget_child.h>
 
+#include <stdlib.h>
 #include <string.h>
 
+#include <utilities/checker.h>
 #include <system/component.h>
 #include <widget/widget_parent.h>
 
@@ -22,6 +24,8 @@ void be_widget_child_destroy(BeWidgetChild *widget)
 		return;
 	}
 
+	// delete all children
+
 	if (widget->childs)
 	{
 		DESTROYER(widget->childs);
@@ -30,85 +34,79 @@ void be_widget_child_destroy(BeWidgetChild *widget)
 	DESTROYER(widget);
 }
 
-void be_widget_add_child(BeWidget *widget, BeWidget *child)
+void be_widget_add_child(BeScene *scene, BeWidget *widget, BeWidget *child)
 {
 	NULL_CHECKER(widget);
 	NULL_CHECKER(child);
 
-	BeEntity *child_entity = child->scene->entities[child->entity_id];
-	BeEntity *widget_entity = widget->scene->entities[widget->entity_id];
+	RETURN_IF_NOT_WIDGET(widget);
+	RETURN_IF_NOT_WIDGET(child);
 
-	if (child_entity->has_component[BE_WIDGET_TYPE_WIDGET_PARENT])
+	if (child->has_component[BE_WIDGET_TYPE_PARENT])
 	{
 		LOGE("Child already added to another parent");
 		return;
 	}
 
-	if (child->scene != widget->scene)
-	{
-		LOGE("Child already bind to another widget or scene");
-		return;
-	}
+	BeWidgetType *w_widget_type = be_widget_get_component(scene, widget, (BeComponentType)BE_WIDGET_TYPE)->component;
+	BeWidgetType *c_widget_type = be_widget_get_component(scene, child, (BeComponentType)BE_WIDGET_TYPE)->component;
 
-	RETURN_IF_NOT_WIDGET_COMPONENT(widget_entity, BE_WIDGET_TYPE_WIDGET_CHILD, BeWidgetChild);
+	RETURN_IF_NOT_SAME(scene, w_widget_type->scene);
+	RETURN_IF_NOT_SAME(scene, c_widget_type->scene);
+	RETURN_IF_NOT_SAME(w_widget_type->scene, c_widget_type->scene);
 
-	u32 widget_child_id = widget_entity->component_id[BE_WIDGET_TYPE_WIDGET_CHILD];
+	RETURN_IF_NOT_HAS_COMPONENT(widget, (BeComponentType)BE_WIDGET_TYPE_CHILD, BeWidgetChild);
+
 	// Get widget child component here
-	BeComponent *c = widget->scene->components[widget_child_id]; //=
-	BeWidgetChild *comp = c->component;
+	BeWidgetChild *comp = be_widget_get_component(scene, widget, (BeComponentType)BE_WIDGET_TYPE_CHILD)->component;
 
 	if (NULL == comp->childs)
 	{
-		comp->childs = (BeWidget **)malloc(sizeof(BeWidget *) * wdgt->cap_child);
+		comp->childs = (BeWidget **)malloc(sizeof(BeWidget *) * comp->cap_child);
 	}
 
-	if (comp->numb_child >= wdgt->cap_child)
+	if (comp->numb_child >= comp->cap_child)
 	{
 		comp->cap_child *= 2;
-		comp->childs = (BeWidget **)realloc(wdgt->childs, sizeof(BeWidget *) * wdgt->cap_child);
+		comp->childs = (BeWidget **)realloc(comp->childs, sizeof(BeWidget *) * comp->cap_child);
 	}
 
 	// add widget
 	comp->childs[comp->numb_child] = child;
 
 	// add parent widget component to child
-	BeWidgetParent *p = be_widget_parent_new(widget);
+	BeWidgetParent *p = be_widget_parent_new(comp->numb_child, widget);
+	BeComponent *cp = be_component_new((BeComponentType)BE_WIDGET_TYPE_PARENT, p);
 
-	be_entity_add_component(child->scene, child_entity, p);
+	be_entity_add_component(scene, child, cp);
 	comp->numb_child++;
 }
 
-void be_widget_remove_child(BeWidget *widget, BeWidget *child_widget)
+void be_widget_remove_child(BeScene *scene, BeWidget *widget, BeWidget *child_widget)
 {
+	NULL_CHECKER(scene);
 	NULL_CHECKER(widget);
 	NULL_CHECKER(child_widget);
 
-	BeEntity *widget_entity = widget->scene->entities[widget->entity_id];
-	BeEntity *child_widget_entity = child_widget->scene->entites[child_widget->entity_id];
+	BeWidgetType *w_widget_comp = be_widget_get_component(scene, widget, (BeComponentType)BE_WIDGET_TYPE)->component;
+	BeWidgetType *c_widget_comp = be_widget_get_component(scene, child_widget, (BeComponentType)BE_WIDGET_TYPE)->component;
 
-	if (widget->scene != child_widget->scene)
-	{
-		LOGE("Widget and child are not in same scene");
-		return;
-	}
+	RETURN_IF_NOT_SAME(scene, w_widget_comp->scene);
+	RETURN_IF_NOT_SAME(scene, c_widget_comp->scene);
+	RETURN_IF_NOT_SAME(w_widget_comp->scene, w_widget_comp->scene);
 
-	RETURN_IF_NOT_WIDGET_COMPONENT(child_widget_entity, BE_WIDGET_TYPE_WIDGET_PARENT, BeWidgetParent);
+	RETURN_IF_NOT_HAS_COMPONENT(child_widget, BE_WIDGET_TYPE_PARENT, BeWidgetParent);
+	RETURN_IF_NOT_HAS_COMPONENT(widget, BE_WIDGET_TYPE_CHILD, BeWidgetChild);
 
-	RETURN_IF_NOT_WIDGET_COMPONENT(widget_entity, BE_WIDGET_TYPE_WIDGET_CHILD, BeWidgetChild);
+	// get component widget parent
+	BeWidgetParent *child_comp = be_widget_get_component(scene, child_widget, (BeComponentType)BE_WIDGET_TYPE_PARENT)->component;
 
-	// get component widget child
-	u32 id_comp = child_widget_entity->component_id[BE_WIDGET_TYPE_WIDGET_PARENT];
-	BeComponent *c_comp = child_widget->scene->components[id_comp];
-	BeWidgetParent *child_comp = c_comp->component;
-
-	u32 id_parent = widget_entity->component_id[BE_WIDGET_TYPE_WIDGET_CHILD];
-	BeComponent *p_comp = widget->scene->components[id_parent];
-	BeWidgetChild *parent_comp = p_comp->component;
+	BeWidgetChild *parent_comp = be_widget_get_component(scene, widget, (BeComponentType)BE_WIDGET_TYPE_CHILD)->component;
 
 	u32 offset = child_comp->index_in_parent + 1;
 	if (offset == parent_comp->numb_child)
 	{
-		be_widget_destroy(parent_comp->childs[offset]);
+		be_widget_destroy(scene, parent_comp->childs[offset]);
 		parent_comp->numb_child--;
 		return;
 	}
@@ -119,38 +117,41 @@ void be_widget_remove_child(BeWidget *widget, BeWidget *child_widget)
 	if (parent_comp->numb_child < parent_comp->cap_child)
 	{
 		parent_comp->cap_child *= 2;
-		parent_comp->childs=realloc(parent_comp->childs,sizeof(BeWidget*)*(parent_comp->numb_child-1);
+		parent_comp->childs = realloc(parent_comp->childs, sizeof(BeWidget *) * (parent_comp->numb_child - 1));
 	}
 
-	memcpy(&(parent_comp->childs[child_comp->index_entity_in_parent]), tmp, sizeof(BeWidget *) * (parent_comp->numb_child - offset));
+	memcpy(&(parent_comp->childs[child_comp->index_in_parent]), tmp, sizeof(BeWidget *) * (parent_comp->numb_child - offset));
 	parent_comp->numb_child--;
 
 	free(tmp);
 	tmp = NULL;
 
-	be_widget_destroy(child_widget);
+	be_widget_destroy(scene, child_widget);
 }
 
-void be_widget_clear_child(BeWidget *widget)
+void be_widget_clear_child(BeScene *scene, BeWidget *widget)
 {
+	NULL_CHECKER(scene);
 	NULL_CHECKER(widget);
 
-	BeEntity *widget_entity = widget->scene->entities[widget->entity_id];
+	RETURN_IF_NOT_WIDGET(widget);
 
-	RETURN_IF_NOT_WIDGET_COMPONENT(widget_entity, BE_WIDGET_TYPE_WIDGET_CHILD, BeWidgetChild);
+	BeWidgetType *widget_type_comp = be_widget_get_component(scene, widget, (BeComponentType)BE_WIDGET_TYPE)->component;
 
-	u32 id_parent = widget_entity->component_id[BE_WIDGET_TYPE_WIDGET_CHILD];
-	BeComponent *p_comp = widget->scene->components[id_parent];
-	BeWidgetChild *parent_comp = p->component;
+	RETURN_IF_NOT_SAME(scene, widget_type_comp->scene);
+
+	RETURN_IF_NOT_HAS_COMPONENT(widget, BE_WIDGET_TYPE_CHILD, BeWidgetChild);
+
+	BeWidgetChild *parent_comp = be_widget_get_component(scene, widget, (BeComponentType)BE_WIDGET_TYPE_CHILD)->component;
 	u32 i = 0;
 	// delete all child widget
 	for (i = 0; i < parent_comp->numb_child; i++)
 	{
-		be_widget_destroy(parent_comp->childs[i]);
+		be_widget_destroy(scene, parent_comp->childs[i]);
 	}
 
 	free(parent_comp->childs);
-	parent->childs = NULL;
+	parent_comp->childs = NULL;
 	parent_comp->childs = (BeWidget **)malloc(sizeof(BeWidget *) * DEFAULT_CHILD_CAPACITY);
 	parent_comp->numb_child = 0;
 	parent_comp->cap_child = DEFAULT_CHILD_CAPACITY;

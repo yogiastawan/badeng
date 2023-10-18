@@ -5,19 +5,20 @@
 #include <utilities/checker.h>
 #include <utilities/log.h>
 
-BeWidgetParent *be_widget_parent_new(BeWidget *widget)
+BeWidgetParent *be_widget_parent_new(u32 index_in_parent, BeWidget *widget_parent)
 {
-	NULL_CHECKER(widget);
+	NULL_CHECKER_VAL(widget_parent, NULL);
 
-	RETURN_IF_NOT_WIDGET_COMPONENT(widget->entity, BE_WIDGET_TYPE_WIDGET_CHILD, BeWidgetChild);
+	RETURN_VAL_IF_NOT_HAS_COMPONENT(widget_parent, BE_WIDGET_TYPE_CHILD, BeWidgetChild, NULL);
 
-	BeWidgetParent* prn=(BeWidgetParent*)malloc(sizeof(BeWidgetParent);
-	prn->parent_id=widget->entity->id;
-	
+	BeWidgetParent *prn = (BeWidgetParent *)malloc(sizeof(BeWidgetParent));
+	prn->parent_id = widget_parent->id;
+
 	// get index of widget child component
-	u32 id_comp=widget->entity->component_id[BE_WIDGET_TYPE_WIDGET_CHILD];
-	prn->index_in_parent=widget->scene->components[id_comp]->numb_child;
-	
+	u32 id_comp = widget_parent->component_id[BE_WIDGET_TYPE_CHILD];
+
+	prn->index_in_parent = index_in_parent;
+
 	return prn;
 }
 

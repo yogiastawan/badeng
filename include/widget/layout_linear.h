@@ -1,5 +1,5 @@
-#ifndef GIHEX_LINEAR_LAYOUT_H
-#define GIHEX_LINEAR_LAYOUT_H
+#ifndef GIHEX_LAYOUT_LINEAR_H
+#define GIHEX_LAYOUT_LINEAR_H
 
 #include <widget/widget.h>
 #include <scene/scene.h>
@@ -8,23 +8,23 @@
 #ifdef _cplusplus
 extern C
 {
-#endif
+#endif /* GIHEX_LAYOUT_LINEAR_H */
 
-typedef BeWidget BeLayoutLinear;
+    typedef BeWidget BeLayoutLinear;
 
-BeLayoutLinear* be_layout_linear_new(BeScene *scene, BeLinearOrientation orientation);
+    BeLayoutLinear *be_layout_linear_new(BeScene * scene, BeLinearOrientation orientation);
 
-void be_linear_layout_destroy(BeLinearLayout *layout);
+    void be_linear_layout_destroy(BeScene * scene, BeLayoutLinear * layout);
 
-void be_layout_linear_set_orientation(BeLayoutLinear *layout, BeLinearOrientation orientation);
+    void be_layout_linear_set_orientation(BeScene * scene, BeLayoutLinear * layout, BeLinearOrientation orientation);
 
-void be_layout_linear_add_children(BeLayoutLinear *layout, BeWidget *child);
+    void be_layout_linear_add_children(BeScene * scene, BeLayoutLinear * layout, BeWidget * child);
 
-void be_layout_linear_remove_children(BeLayoutLinear *layout, BeWidget *child);
+    void be_layout_linear_remove_children(BeScene * scene, BeLayoutLinear * layout, BeWidget * child);
 
-void be_layout_linear_set_margin(BeLayoutLinear*layout,u32 to,u32 bottom,,u22 left, u32 right);
+    void be_layout_linear_set_margin(BeScene * scene, BeLayoutLinear * layout, u32 top, u32 bottom, u32 left, u32 right);
 
-void be_layout_linear_set_padding(BeLayoutLinear*layout,u32 top,u32 bottom, u32 left,u32 right);
+    void be_layout_linear_set_padding(BeScene * scene, BeLayoutLinear * layout, u32 top, u32 bottom, u32 left, u32 right);
 
 #ifdef _cplusplus
 }

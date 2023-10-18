@@ -114,7 +114,7 @@ void be_scene_remove_entity(BeScene *scene, BeEntity *entity)
     }
 
     u32 i = 0;
-    for (i = 0; i < NUMB_COMPONENT; i++)
+    for (i = 0; i < NUMB_TYPE_COMPONENT; i++)
     {
         if (!entity->has_component[i])
         {

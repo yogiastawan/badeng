@@ -17,7 +17,7 @@ extern C
         u32 index_in_parent;
     };
 
-    BeWidgetParent *be_widget_parent_new(BeWidget * widget);
+    BeWidgetParent *be_widget_parent_new(u32 index_in_parent, BeWidget * widget);
 
     void be_widget_parent_destroy(BeWidgetParent * widget);
 
@@ -25,4 +25,4 @@ extern C
 }
 #endif
 
-#endif/* GIHEX_WIDGET_PARENT_H */
+#endif /* GIHEX_WIDGET_PARENT_H */

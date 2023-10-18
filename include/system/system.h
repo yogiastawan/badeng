@@ -11,14 +11,14 @@ extern C
     typedef struct _be_system BeSystem;
     struct _be_system
     {
-        u32 numb_slice_component[NUMB_COMPONENT];
-        u32 cap_slice_component[NUMB_COMPONENT];
-        u32 *id_slice_component[NUMB_COMPONENT];
+        u32 numb_slice_component[NUMB_TYPE_COMPONENT];
+        u32 cap_slice_component[NUMB_TYPE_COMPONENT];
+        u32 *id_slice_component[NUMB_TYPE_COMPONENT];
     };
 
     BeSystem *be_system_new();
 
-    void be_system_destroy(BeSystem *system);
+    void be_system_destroy(BeSystem * system);
 
     void be_system_remove_component(BeSystem * system, BeComponent * comp);
 
@@ -28,6 +28,6 @@ extern C
 
 #ifdef __cplusplus
 }
-#endif /* GIHEX_SYSTEM_H */
+#endif
 
 #endif /* GIHEX_SYSTEM_H */

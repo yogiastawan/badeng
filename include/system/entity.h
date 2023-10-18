@@ -34,8 +34,8 @@ extern C
     struct _be_entity
     {
         u32 id;
-        u32 component_id[NUMB_COMPONENT];
-        bool has_component[NUMB_COMPONENT];
+        u32 component_id[NUMB_TYPE_COMPONENT];
+        bool has_component[NUMB_TYPE_COMPONENT];
     };
 
     BeEntity *be_entity_new();

@@ -37,10 +37,6 @@ extern C
     LOGI(":>Nulling \"%s\"", #X); \
     X = NULL
 
-#define ASSOIATED_FAILED(X, Y)                   \
-    LOGE("\"%s\" is not assoiated with \"%s\"", #X, #Y); \
-    return
-
 #ifdef __cplusplus
 }
 #endif

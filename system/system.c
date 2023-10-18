@@ -10,7 +10,7 @@ BeSystem *be_system_new()
 {
     BeSystem *b = (BeSystem *)malloc(sizeof(BeSystem));
     u32 i;
-    for (i = 0; i < NUMB_COMPONENT; i++)
+    for (i = 0; i < NUMB_TYPE_COMPONENT; i++)
     {
         b->cap_slice_component[i] = DEFAULT_COMPONENT_CAPACITY;
         b->numb_slice_component[i] = 0;
@@ -22,7 +22,7 @@ BeSystem *be_system_new()
 void be_system_destroy(BeSystem *system)
 {
     u32 i = 0;
-    for (i = 0; i < NUMB_COMPONENT; i++)
+    for (i = 0; i < NUMB_TYPE_COMPONENT; i++)
     {
         free(system->id_slice_component[i]);
         system->id_slice_component[i] = NULL;
@@ -65,7 +65,7 @@ void be_system_remove_component(BeSystem *system, BeComponent *comp)
 
 BeComponentHandler be_system_get_default_handler(BeComponentType type)
 {
-    static BeComponentHandler default_handler[NUMB_COMPONENT] = {
+    static BeComponentHandler default_handler[NUMB_TYPE_COMPONENT] = {
         system_visible_update,
         0};
     return default_handler[type];
