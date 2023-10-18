@@ -4,6 +4,7 @@
 #include <stdbool.h>
 
 #include <utilities/mangle.h>
+#include <utilities/checker.h>
 #include <system/entity.h>
 #include <system/component.h>
 #include <scene/scene.h>
@@ -25,10 +26,6 @@
 	}
 
 #define RETURN_IF_NOT_WIDGET(W) RETURN_IF_NOT_HAS_COMPONENT(W, (BeComponentType)BE_WIDGET_TYPE, BeWidgetType);
-
-#define ASSOIATED_FAILED(X, Y)                           \
-	LOGE("\"%s\" is not assoiated with \"%s\"", #X, #Y); \
-	return
 
 #define RETURN_IF_NOT_SAME(X, Y) \
 	if (X != Y)                  \
@@ -69,6 +66,6 @@ extern C
 
 #ifdef __cplusplus
 }
-#endif /* GIHEX_WIDGET_H */
+#endif
 
 #endif /*GIHEX_WIDGET_H*/

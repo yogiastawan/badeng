@@ -8,7 +8,7 @@
 #ifdef _cplusplus
 extern C
 {
-#endif /* GIHEX_LAYOUT_LINEAR_H */
+#endif
 
     typedef BeWidget BeLayoutLinear;
 

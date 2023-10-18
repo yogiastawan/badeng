@@ -28,6 +28,10 @@ extern C
 #define NULL_CHECKER_VAL(X, V)
 #endif
 
+#define ASSOIATED_FAILED(X, Y)                           \
+	LOGE("\"%s\" is not assoiated with \"%s\"", #X, #Y); \
+	return
+
 #define DESTROYER(X)                 \
     LOGI(":>Destroying \"%s\"", #X); \
     free(X);                         \

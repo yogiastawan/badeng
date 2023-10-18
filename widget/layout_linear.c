@@ -48,12 +48,7 @@ void be_linear_layout_destroy(BeScene *scene, BeLayoutLinear *layout)
 void be_layout_linear_set_orientation(BeScene *scene, BeLayoutLinear *layout, BeLinearOrientation orientation)
 {
     NULL_CHECKER(layout);
-    // get index orientation component
-    // BeEntity *entity = layout->scene->entities[layout->entity_id];
     RETURN_IF_NOT_HAS_COMPONENT(layout, BE_WIDGET_TYPE_ORIENTATION, BeLinearOrientation);
-    u32 id = layout->component_id[BE_WIDGET_TYPE_ORIENTATION];
-
-    // BeComponent *comp = scene->components[id];
     BeLinearLayoutOrientation *or_comp = (BeLinearLayoutOrientation *)be_widget_get_component(scene, layout, (BeComponentType)BE_WIDGET_TYPE_ORIENTATION)->component;
 
     or_comp->orientation = orientation;

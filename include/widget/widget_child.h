@@ -6,7 +6,7 @@
 #ifdef __cplusplus
 extern C
 {
-#endif/* GIHEX_WIDGET_CHILD_H */
+#endif
 
     typedef struct _be_widget_child BeWidgetChild;
 
@@ -28,6 +28,6 @@ extern C
 
 #ifdef __cplusplus
 }
-#endif/* GIHEX_WIDGET_CHILD_H */
+#endif
 
 #endif /*GIHEX_WIDGET_CHILD_H*/
